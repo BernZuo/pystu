@@ -18,46 +18,46 @@ def doExcel(file_name,sheet_name):
         data.append(param)
     return data
 
-def mySql_conn():
-    config = {'host': '192.168.1.50',
-              'user': "root",
-              'password': "root",
-              'db': "yw-test",
-              'port': 3306}
-    # 连接打开数据库
-    conn = pymysql.connect(**config)
-    cur = conn.cursor()
-    cur.execute("SELECT VERSION()")
-    data = cur.fetchone()
-    print("Database version : %s " % data)
-    cur.close()
-    conn.close()
 def mySQL_01():
     config={'host':'192.168.1.50',
     'user':"root",
     'password':"root",
-    'db':"yw-test",
     'port':3306}
     #连接打开数据库
     conn=pymysql.connect(**config)
+
     # 使用cursor()方法获取操作游标
+
     cur = conn.cursor()
-    a = doExcel('大德12月服务接口调用量.xlsx', 'Sheet1')
-    for i in a:
-        data = i
-        print(i)
-        sql = "INSERT INTO `table_name`(客户标识,客户名称,数据源,运营商,服务项编码,接口,接口名称,承载平台,产品名称,总和调用量) VALUES('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}')".format(
-            data['客户标识'], data['客户名称'], data['数据源'], data['运营商'], data['服务项编码'], data['接口'], data['接口名称'], data['承载平台'],
-            data['产品名称'], data['总和调用量'])
-        print(sql)
-        cur.execute(sql)
-    #获取结果  1）获取单条  2）获取多条
-    # res=cur.fetchone()
-    # res=cur.fetchall()
-    conn.commit()
+
+    try:
+        # 创建数据库
+        DB_NAME = 'bill'
+        cur.execute('CREATE DATABASE IF NOT EXISTS %s' %DB_NAME)
+        conn.select_db(DB_NAME)
+
+        a = doExcel('大德12月服务接口调用量.xlsx', 'Sheet1')
+        for i in a:
+            data = i
+            print(i)
+            sql = "INSERT INTO `table_name`(客户标识,客户名称,数据源,运营商,服务项编码,接口,接口名称,承载平台,产品名称,总和调用量) VALUES('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}')".format(
+                data['客户标识'], data['客户名称'], data['数据源'], data['运营商'], data['服务项编码'], data['接口'], data['接口名称'], data['承载平台'],
+                data['产品名称'], data['总和调用量'])
+            #print(sql)
+            #cur.execute(sql)
+        #获取结果  1）获取单条  2）获取多条
+        # res=cur.fetchone()
+        # res=cur.fetchall()
+        conn.commit()
+
+    except:
+        import traceback
+        traceback.print_exc()
+        conn.rollback()
+    finally:
     #关掉游标，关掉连接
-    cur.close()
-    conn.close()
+        cur.close()
+        conn.close()
 
 if __name__ == '__main__':
         #mySql_conn()
