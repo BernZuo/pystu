@@ -20,3 +20,17 @@ L2.extend([5,6,7])
 print(L2)
 
 # 字典 无序 键值对
+d1 = {'name':'zwl','sex':'man','age':28}
+print d1['name']
+print len(d1)
+print d1.has_key('name')
+print d1.has_key('weigth')
+
+# 元组 一旦创建 不可改变  有序
+T=(1,2,3,4)
+print T
+
+myfile = open('a.txt')
+print myfile.readline()
+print myfile.readline()
+myfile.close()
